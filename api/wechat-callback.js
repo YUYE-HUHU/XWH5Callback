@@ -4,7 +4,7 @@ const crypto = require('crypto');
 // 微信配置
 const APP_ID = 'wx471126d787432ddd';
 const APP_SECRET = 'e5f0749f629f7e5204c7ecdaf8508f98';
-const TOKEN = 'LSLXWD-WXH5-Text-01';  // 微信 Token
+const TOKEN = 'lslxwdh5test';  // 微信 Token
 
 module.exports = async (req, res) => {
   // 处理微信验证请求（用于Token校验）
