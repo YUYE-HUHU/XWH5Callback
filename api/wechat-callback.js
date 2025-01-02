@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   }
 
   // 处理微信授权回调请求（用于获取access_token和openid）
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     const { code } = req.query;  // 获取微信返回的code
 
     if (!code) {
@@ -59,9 +59,11 @@ module.exports = async (req, res) => {
       });
 
       const userInfo = userInfoResponse.data;
+
       // 返回用户信息
       return res.json(userInfo);
     } catch (error) {
+      console.error('Error occurred while getting access token or user info', error);
       return res.status(500).send('Error occurred while getting access token or user info');
     }
   }
@@ -69,3 +71,4 @@ module.exports = async (req, res) => {
   // 默认返回 404
   res.status(404).send('Not Found');
 };
+
