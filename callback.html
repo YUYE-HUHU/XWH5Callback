@@ -14,34 +14,37 @@
     const state = urlParams.get('state'); // 获取state参数
 
     if (code) {
-        // 将code发送到后端获取access_token
-        fetch(`https://your-backend.com/wechat/get_token?code=${code}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.access_token && data.openid) {
-                    // 获取到用户信息后做进一步处理
-                    const accessToken = data.access_token;
-                    const openid = data.openid;
+        // 将code发送到你的后端API处理（通过Vercel部署的API）
+        fetch(`/api/wechat-callback?code=${code}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token && data.openid) {
+                // 获取到用户信息后做进一步处理
+                const accessToken = data.access_token;
+                const openid = data.openid;
 
-                    // 通过 access_token 和 openid 获取用户信息
-                    fetch(`https://api.weixin.qq.com/sns/userinfo?access_token=${accessToken}&openid=${openid}&lang=zh_CN`)
-                        .then(response => response.json())
-                        .then(userInfo => {
-                            // 用户信息获取成功
-                            console.log('用户信息：', userInfo);
-                            document.body.innerHTML = `<h2>欢迎回来，${userInfo.nickname}</h2><img src="${userInfo.headimgurl}" alt="用户头像" />`;
-                        });
-                } else {
-                    document.body.innerHTML = '<h2>获取用户信息失败</h2>';
-                }
-            })
-            .catch(error => {
-                console.error('请求失败', error);
-                document.body.innerHTML = '<h2>请求失败，请稍后重试</h2>';
-            });
+                // 通过 access_token 和 openid 获取用户信息
+                fetch(`https://api.weixin.qq.com/sns/userinfo?access_token=${accessToken}&openid=${openid}&lang=zh_CN`)
+                    .then(response => response.json())
+                    .then(userInfo => {
+                        // 用户信息获取成功
+                        console.log('用户信息：', userInfo);
+                        document.body.innerHTML = `<h2>欢迎回来，${userInfo.nickname}</h2><img src="${userInfo.headimgurl}" alt="用户头像" />`;
+                    });
+            } else {
+                document.body.innerHTML = '<h2>获取用户信息失败</h2>';
+            }
+        })
+        .catch(error => {
+            console.error('请求失败', error);
+            document.body.innerHTML = '<h2>请求失败，请稍后重试</h2>';
+        });
     } else {
         document.body.innerHTML = '<h2>授权失败，没有获取到授权code</h2>';
     }
   </script>
 </body>
 </html>
+
